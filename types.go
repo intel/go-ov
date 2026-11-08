@@ -67,7 +67,7 @@ func (m OV_PERFORMANCE_MODE) String() string {
 
 type EngineOpts struct {
 	ModelPath       string              // Directory where to find the LLM files
-	LibraryPath     string              // Directory where to find the LLM library files
+	LibraryPath     string              // Directory where to find the OpenVINO DLL files
 	InferenceDevice OV_INFERENCE_DEVICE // Device where to run the inference (AUTO, CPU, GPU, NPU)
 	CPUPinning      bool                // enable/disable CPU pinning
 	PerformanceMode OV_PERFORMANCE_MODE // LATENCY, THROUGHPUT, UNDEFINED
@@ -77,7 +77,7 @@ type EngineOpts struct {
 
 type ChatOpts struct {
 	MaxTokens    uint    // Maximum number of tokens to generate on responses. Use 0 to let OpenVINO decide
-	Temperature  float32 // Value for the temperature to use on responses
+	Temperature  float32 // Value for the temperature to use on responses. Use 0 for deterministic/greedy output
 	SystemPrompt string  // Optional system prompt applied via the chat template
 	MaxHistory   int     // Maximum number of retained user/assistant messages (excludes system)
 }

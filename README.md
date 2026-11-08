@@ -1,7 +1,7 @@
 # go-ov
 A lightweight OpenVino client library for Go applications.
 
-*NOTE:* This is still a work in progress and not recommended for production use. Suggestions and feedback are welcome.
+ ***NOTE:*** **This is still a work in progress and not recommended for production use yet. Suggestions and feedback are welcome.**
 
 The purpose of this library is to simplify the using of local LLMs for light text-only inference jobs within Go applications in Windows without requiring the use of an entire OpenVINO Model Server (OVMS) installation. `go-ov` allows you to load any model compatible with OpenVINO in IR format and provides some control over how the model is loaded and utilized (CPU vs GPU vs NPU vs AUTO). Responses can be generated as full-text or token stream.
 
@@ -23,14 +23,10 @@ AI Model and OpenVINO runtime DLLs must be provided separately.
 
 ## How To Use
 
-Pre-requisites:
-* [Download](https://huggingface.co/models?library=openvino) a model optimized for OpenVino
-* [Download](https://github.com/intel/go-ov/releases) the OpenVino runtime DLLs from the releases folder and unzip somewhere
+Before using go-ov you need the following pre-requisites:
 
-> Hint: See the [setup.sh](setup.sh) script for help on how to download a model from Hugging Face 
-
-> Hint 2: See [cmd/goov/main.go](cmd/goov/main.go) for an example program
-
+* A model optimized for OpenVino. You can [find several options](https://huggingface.co/models?library=openvino) in the HuggingFace site. The [download-model.sh](util/download-model.sh) helper script is provided as a convenience to download models from HuggingFace.
+* A directory with the required OpenVINO GenAI runtime DLLs. Use the [make-ov-runtime.sh](util/make-ov-runtime.sh) to create a zip with the necessary files.
 
 Start by importing the goov library into your code
 ```go
@@ -124,6 +120,45 @@ for chunk := range stream {
 }
 fmt.Println()
 ```
+
+## AI Engine Configuration
+
+When initializing the engine, the [EngineOpts](types.go) provide some levers to customize the inteference jobs. Use `SafeEngineOpts` to provide a conservative configuration to minimize impact on CPU inferences.
+
+`EngineOpts.InferenceDevice`: Tells OpenVINO which type of device to use for running the jobs.
+
+    - OV_INFERENCE_DEVICE_AUTO: let OpenVINO pick the best available device (with CPU fallback)
+    - OV_INFERENCE_DEVICE_CPU:  run on the CPU
+    - OV_INFERENCE_DEVICE_GPU:  run on the Intel integrated or discrete GPU
+    - OV_INFERENCE_DEVICE_NPU:  run on the Intel NPU (AI Boost)
+
+`EngineOpts.PerformanceMode`: Use this setting to select the OpenVINO performance hint
+
+    - OV_PERFORMANCE_MODE_UNDEFINED:  no hint; use the OpenVINO defaults
+    - OV_PERFORMANCE_MODE_LATENCY:    optimize for low latency / fast first tokens
+    - OV_PERFORMANCE_MODE_THROUGHPUT: optimize for total throughput across requests
+
+`EngineOpts.CPUPinning`: When `true` provides a hint to the engine to pin inference threads to cores. Only applicable when inference device is CPU.
+
+`EgineOpts.NumThreads`: Number of CPU threads to use. When 0, OpenVINO uses its default behavior. Only applicable when inference device is CPU.
+
+`EngineOpts.ModelPath`: Should point to the directory containing the LLM files.
+
+`EngineOpts.LibraryPath`: Should point to the directory containing the OpenVINO DLL files
+
+`EngineOpts.DebugMode`: Set to `true` to display additional debugging output and telemetry.
+
+## Text Generation Configuration
+
+The [ChatOpts](types.go) object is sued to provide OpenVINO with parameters specific for generating text.
+
+`ChatOpts.MaxTokens`: Maximum number of tokens to generate on responses. When 0, OpenVINO uses its default behavior.
+
+`ChatOpts.Temperature`: Value (`float32`) to use for controlling the "temperature" of the responses. Use 0 for deterministic/greedy output.
+
+`ChatOpts.SystemPrompt`: This property sets the System Prompt to use for all text generation jobs.
+
+`ChatOpts.MaxHistory`: Maximum number of retained user/assistant messages (excludes system). When the history reaches this value, older entries are removed.
 
 ## Contributing
 
