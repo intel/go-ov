@@ -18,7 +18,7 @@ cmd /c "`"$vcvars`" && set" | ForEach-Object {
     if ($_ -match '^(.*?)=(.*)$') { Set-Item -Path "Env:$($matches[1])" -Value $matches[2] }
 }
 
-$ovRuntime = 'vendor\openvino_genai\2026.4.1.0_x86_64\runtime'
+$ovRuntime = 'vendor\openvino_genai_windows_2026.4.0.0_x86_64\runtime'
 $include = Join-Path $ovRuntime 'include'
 $libDir = Join-Path $ovRuntime 'lib\intel64\Release'
 

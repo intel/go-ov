@@ -28,10 +28,10 @@ if [ ! -f "$OPENVINO_ROOT/runtime/3rdparty/tbb/bin/tbb12.dll" ]; then
 fi
 
 # Build the MSVC worker that hosts OpenVINO (ABI-compatible with the vendor runtime).
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File build_worker.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ../build_worker.ps1
 
 # Place the worker in the resources folder (to be embedded later).
 mkdir -p ../resources
-mv -f ov_worker.exe ../resources/
+mv -f ../ov_worker.exe ../resources/
 
 echo Done!
