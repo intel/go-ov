@@ -12,14 +12,13 @@ set -e
 SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
-OV_VERSION="2026.4.0.0"
+OV_VERSION="2026.4.1.0"
 OPENVINO_ROOT="../vendor/openvino_genai_windows_${OV_VERSION}_x86_64"
 
 if [ ! -d "$OPENVINO_ROOT" ]; then
 	echo "OpenVINO not found, downloading it now."
     sh ./download-openvino.sh
 fi
-
 
 # Assemble the runtime DLLs the worker needs (CPU, GPU, NPU, AUTO) into a single root-level folder.
 RUNTIME_SRC="$OPENVINO_ROOT/runtime/bin/intel64/Release"

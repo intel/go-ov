@@ -8,8 +8,8 @@
 
 set -e
 
-OV_VERSION="2026.4.0.0"
-OV_CHANNEL="2026.4"
+OV_VERSION="2026.4.1.0"
+OV_CHANNEL="2026.4.1"
 
 OV_PKG="openvino_genai_windows_${OV_VERSION}_x86_64"
 OV_DIR="../vendor/${OV_PKG}"
