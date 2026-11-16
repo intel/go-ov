@@ -13,6 +13,39 @@ The library only includes the Go code as well as the OV bridge executable, host 
 
 ![go-ov architecture](docs/architecture.svg)
 
+## Hello World
+
+The simplest possible use of go-ov for text generation.
+
+```go
+package main
+
+import (
+	"fmt"
+
+	goov "github.com/intel/go-ov"
+)
+
+func main() {
+	opts := goov.DefaultEngineOpts()
+	opts.ModelPath = `C:\models\OpenVINO\Phi-3.5-mini-instruct-int4-ov`
+	opts.LibraryPath = `C:\openvino\bin`
+
+	engine, _ := goov.New(opts)
+	defer engine.Close()
+
+	resp, _ := engine.Generate("What are the 3 main tourist attractions in Paris?", goov.ChatOpts{
+		SystemPrompt: "You are a helpful assistant.",
+		MaxTokens:    30,
+	})
+
+	fmt.Println(resp)
+}
+
+// Sample output:
+// The 3 main tourist attractions in Paris are the Eiffel Tower, the Louvre Museum,
+// and the Notre-Dame Cathedral.
+```
 
 ## Installation
 ```bash
